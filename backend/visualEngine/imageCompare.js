@@ -2,9 +2,14 @@ const fs = require("fs");
 const { PNG } = require("pngjs");
 const pixelmatch = require("pixelmatch");
 
+// Fixed target dimensions matching Puppeteer's viewport
+const TARGET_WIDTH = 1280;
+const TARGET_HEIGHT = 720;
+
 /**
  * Compare two PNG images using pixelmatch.
- * Generates a diff image highlighting layout differences as a heatmap.
+ * Both images are normalized to the same fixed dimensions (1280x720)
+ * before comparison, ensuring consistent results regardless of source sizes.
  *
  * @param {string} expectedPath - Path to the expected (reference) screenshot
  * @param {string} actualPath   - Path to the actual (student) screenshot
@@ -21,25 +26,20 @@ async function compareImages(expectedPath, actualPath, diffPath) {
       const expectedImg = PNG.sync.read(expectedData);
       const actualImg = PNG.sync.read(actualData);
 
-      // ── Normalize dimensions ─────────────────────────────────────
-      // Use the larger dimensions to ensure we can compare
-      const width = Math.max(expectedImg.width, actualImg.width);
-      const height = Math.max(expectedImg.height, actualImg.height);
-
-      // Resize images to same dimensions if needed
-      const normalizedExpected = resizeImage(expectedImg, width, height);
-      const normalizedActual = resizeImage(actualImg, width, height);
+      // ── Normalize both images to the same fixed dimensions ──────
+      const normalizedExpected = normalizeToTarget(expectedImg, TARGET_WIDTH, TARGET_HEIGHT);
+      const normalizedActual = normalizeToTarget(actualImg, TARGET_WIDTH, TARGET_HEIGHT);
 
       // ── Create diff image ────────────────────────────────────────
-      const diff = new PNG({ width, height });
+      const diff = new PNG({ width: TARGET_WIDTH, height: TARGET_HEIGHT });
 
       // Run pixelmatch comparison
       const mismatchedPixels = pixelmatch(
         normalizedExpected.data,
         normalizedActual.data,
         diff.data,
-        width,
-        height,
+        TARGET_WIDTH,
+        TARGET_HEIGHT,
         {
           threshold: 0.1,           // Color difference threshold
           alpha: 0.1,               // Blending factor for unchanged pixels
@@ -50,7 +50,7 @@ async function compareImages(expectedPath, actualPath, diffPath) {
         }
       );
 
-      const totalPixels = width * height;
+      const totalPixels = TARGET_WIDTH * TARGET_HEIGHT;
       const mismatchPercentage = (mismatchedPixels / totalPixels) * 100;
 
       // ── Write diff image ─────────────────────────────────────────
@@ -62,7 +62,7 @@ async function compareImages(expectedPath, actualPath, diffPath) {
         mismatchedPixels,
         totalPixels,
         diffImagePath: diffPath,
-        dimensions: { width, height },
+        dimensions: { width: TARGET_WIDTH, height: TARGET_HEIGHT },
       });
     } catch (error) {
       reject(new Error(`Image comparison failed: ${error.message}`));
@@ -71,42 +71,59 @@ async function compareImages(expectedPath, actualPath, diffPath) {
 }
 
 /**
- * Resize an image to fit within the target dimensions.
- * If the source is smaller, the extra space is filled with white pixels.
- * If the source is larger, it is cropped to fit.
+ * Normalize an image to the target dimensions by proportionally scaling
+ * and centering it on a white canvas.
+ * 
+ * - If the image is larger than the target, it is scaled down to fit.
+ * - If the image is smaller, it is scaled up to fit.
+ * - Aspect ratio is preserved and the image is centered.
  */
-function resizeImage(img, targetWidth, targetHeight) {
+function normalizeToTarget(img, targetWidth, targetHeight) {
+  // If already the target size, return as-is
   if (img.width === targetWidth && img.height === targetHeight) {
     return img;
   }
 
-  const resized = new PNG({ width: targetWidth, height: targetHeight });
+  const result = new PNG({ width: targetWidth, height: targetHeight });
 
   // Fill with white (255, 255, 255, 255)
-  for (let i = 0; i < resized.data.length; i += 4) {
-    resized.data[i] = 255;     // R
-    resized.data[i + 1] = 255; // G
-    resized.data[i + 2] = 255; // B
-    resized.data[i + 3] = 255; // A
+  for (let i = 0; i < result.data.length; i += 4) {
+    result.data[i] = 255;     // R
+    result.data[i + 1] = 255; // G
+    result.data[i + 2] = 255; // B
+    result.data[i + 3] = 255; // A
   }
 
-  // Copy source pixels
-  const copyWidth = Math.min(img.width, targetWidth);
-  const copyHeight = Math.min(img.height, targetHeight);
+  // Calculate scale to fit within target while preserving aspect ratio
+  const scaleX = targetWidth / img.width;
+  const scaleY = targetHeight / img.height;
+  const scale = Math.min(scaleX, scaleY);
 
-  for (let y = 0; y < copyHeight; y++) {
-    for (let x = 0; x < copyWidth; x++) {
-      const srcIdx = (y * img.width + x) * 4;
-      const dstIdx = (y * targetWidth + x) * 4;
+  const scaledWidth = Math.round(img.width * scale);
+  const scaledHeight = Math.round(img.height * scale);
 
-      resized.data[dstIdx] = img.data[srcIdx];
-      resized.data[dstIdx + 1] = img.data[srcIdx + 1];
-      resized.data[dstIdx + 2] = img.data[srcIdx + 2];
-      resized.data[dstIdx + 3] = img.data[srcIdx + 3];
+  // Center the scaled image on the canvas
+  const offsetX = Math.round((targetWidth - scaledWidth) / 2);
+  const offsetY = Math.round((targetHeight - scaledHeight) / 2);
+
+  // Simple nearest-neighbor scaling + centering
+  for (let y = 0; y < scaledHeight; y++) {
+    for (let x = 0; x < scaledWidth; x++) {
+      // Map back to source pixel
+      const srcX = Math.min(Math.floor(x / scale), img.width - 1);
+      const srcY = Math.min(Math.floor(y / scale), img.height - 1);
+
+      const srcIdx = (srcY * img.width + srcX) * 4;
+      const dstIdx = ((y + offsetY) * targetWidth + (x + offsetX)) * 4;
+
+      result.data[dstIdx] = img.data[srcIdx];
+      result.data[dstIdx + 1] = img.data[srcIdx + 1];
+      result.data[dstIdx + 2] = img.data[srcIdx + 2];
+      result.data[dstIdx + 3] = img.data[srcIdx + 3];
     }
   }
 
-  return resized;
+  return result;
 }
 
 module.exports = { compareImages };

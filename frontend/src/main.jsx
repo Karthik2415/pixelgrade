@@ -11,6 +11,7 @@ import TrainerRoomList from './pages/trainer/RoomList';
 import TrainerRoomDetails from './pages/trainer/RoomDetails';
 import CreateQuestion from './pages/trainer/CreateQuestion';
 import Analytics from './pages/trainer/Analytics';
+import Leaderboard from './pages/trainer/Leaderboard';
 import StudentRoomList from './pages/student/RoomList';
 import StudentRoomDetails from './pages/student/RoomDetails';
 import Workspace from './pages/student/Workspace';
@@ -32,12 +33,14 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="/trainer/rooms/:roomId" element={<TrainerRoomDetails />} />
             <Route path="/trainer/rooms/:roomId/tasks/new" element={<CreateQuestion />} />
             <Route path="/trainer/analytics" element={<Analytics />} />
+            <Route path="/trainer/leaderboard" element={<Leaderboard />} />
             
             {/* Student Routes */}
             <Route path="/student/rooms" element={<StudentRoomList />} />
             <Route path="/student/rooms/:roomId" element={<StudentRoomDetails />} />
             <Route path="/student/workspace/:id" element={<Workspace />} />
             <Route path="/student/results/:id" element={<ResultViewer />} />
+            <Route path="/student/leaderboard" element={<Leaderboard />} />
             <Route path="/student/dashboard" element={<Navigate to="/student/rooms" replace />} />
             <Route path="/trainer/dashboard" element={<Navigate to="/trainer/rooms" replace />} />
           </Route>

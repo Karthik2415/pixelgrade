@@ -5,6 +5,7 @@ import {
   BookOpen, 
   PlusCircle, 
   BarChart2, 
+  Trophy,
   LogOut 
 } from "lucide-react";
 
@@ -19,10 +20,12 @@ export default function Sidebar() {
   const links = isTrainer
     ? [
         { name: "Rooms", path: "/trainer/rooms", icon: LayoutDashboard },
+        { name: "Leaderboard", path: "/trainer/leaderboard", icon: Trophy },
         { name: "Analytics", path: "/trainer/analytics", icon: BarChart2 },
       ]
     : [
         { name: "My Classes", path: "/student/rooms", icon: LayoutDashboard },
+        { name: "Leaderboard", path: "/student/leaderboard", icon: Trophy },
       ];
 
   return (
