@@ -57,6 +57,28 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const googleLogin = async (firebaseUser, role = null) => {
+    try {
+      const response = await api.post("/auth/google", {
+        email: firebaseUser.email,
+        name: firebaseUser.displayName,
+        uid: firebaseUser.uid,
+        role: role // Optional: Only required for new registrations
+      });
+      const { token, ...userData } = response.data.data;
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(userData));
+      setUser(userData);
+      return { success: true };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || "Google authentication failed with complete custom setup",
+      };
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -68,6 +90,7 @@ export function AuthProvider({ children }) {
     loading,
     login,
     register,
+    googleLogin,
     logout,
   };
 

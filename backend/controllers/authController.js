@@ -157,4 +157,103 @@ async function login(req, res) {
   }
 }
 
-module.exports = { register, login };
+/**
+ * POST /auth/google
+ * Authenticate via Google (Firebase Auth)
+ */
+async function googleAuth(req, res) {
+  try {
+    const { email, name, uid, role } = req.body;
+
+    if (!email || !uid) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and uid are required for Google Auth",
+      });
+    }
+
+    const db = getDb();
+
+    // Check if user already exists
+    const usersSnapshot = await db
+      .collection("users")
+      .where("email", "==", email)
+      .get();
+
+    let userDoc;
+    let userData;
+
+    if (usersSnapshot.empty) {
+      // User doesn't exist. If no role is provided, this must have been a login attempt
+      if (!role) {
+         return res.status(404).json({
+           success: false,
+           message: "Account not found. Please register first.",
+         });
+      }
+
+      if (!["student", "trainer"].includes(role)) {
+        return res.status(400).json({
+          success: false,
+          message: "Role must be 'student' or 'trainer'",
+        });
+      }
+
+      // Create new user via Google Sign-in registration
+      const userRef = await db.collection("users").add({
+        name: name || "Google User",
+        email,
+        authProvider: "google",
+        firebaseUid: uid,
+        role,
+        createdAt: new Date().toISOString(),
+      });
+      
+      const newDoc = await userRef.get();
+      userDoc = newDoc;
+      userData = newDoc.data();
+    } else {
+      // User exists, log them in (ignore the role passed from frontend, use DB role)
+      userDoc = usersSnapshot.docs[0];
+      userData = userDoc.data();
+      
+      // Optionally link Google provider if they originally signed up via email/password
+      if (!userData.authProvider) {
+         await userDoc.ref.update({ authProvider: "google", firebaseUid: uid });
+      }
+    }
+
+    // Generate custom backend JWT
+    const token = jwt.sign(
+      {
+        userId: userDoc.id,
+        email: userData.email,
+        role: userData.role,
+        name: userData.name,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "24h" }
+    );
+
+    res.json({
+      success: true,
+      message: "Google Auth successful",
+      data: {
+        userId: userDoc.id,
+        name: userData.name,
+        email: userData.email,
+        role: userData.role,
+        token,
+      },
+    });
+  } catch (error) {
+    console.error("Google Auth error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Google Auth failed",
+      error: error.message,
+    });
+  }
+}
+
+module.exports = { register, login, googleAuth };
