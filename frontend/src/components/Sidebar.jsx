@@ -6,6 +6,7 @@ import {
   PlusCircle, 
   BarChart2, 
   Trophy,
+  Flame,
   LogOut 
 } from "lucide-react";
 
@@ -20,11 +21,13 @@ export default function Sidebar() {
   const links = isTrainer
     ? [
         { name: "Rooms", path: "/trainer/rooms", icon: LayoutDashboard },
+        { name: "Contests", path: "/trainer/contests", icon: Flame },
         { name: "Leaderboard", path: "/trainer/leaderboard", icon: Trophy },
         { name: "Analytics", path: "/trainer/analytics", icon: BarChart2 },
       ]
     : [
         { name: "My Classes", path: "/student/rooms", icon: LayoutDashboard },
+        { name: "Contests", path: "/student/contests", icon: Flame },
         { name: "Leaderboard", path: "/student/leaderboard", icon: Trophy },
       ];
 

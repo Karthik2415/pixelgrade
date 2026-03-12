@@ -6,7 +6,8 @@ import {
   BookOpen, 
   CheckCircle,
   FileText,
-  Play
+  Play,
+  Clock
 } from "lucide-react";
 
 export default function StudentRoomDetails() {
@@ -110,9 +111,17 @@ export default function StudentRoomDetails() {
                   </p>
                   
                   <div className="flex items-center justify-between mt-auto">
-                    <div className="flex items-center text-xs font-bold uppercase tracking-widest text-gray-500 bg-gray-800 px-2 py-1 rounded">
-                      <Play size={12} className="mr-1" />
-                      Active
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center text-xs font-bold uppercase tracking-widest text-gray-500 bg-gray-800 px-2 py-1 rounded">
+                        <Play size={12} className="mr-1" />
+                        Active
+                      </div>
+                      {task.timeLimit && (
+                        <div className="flex items-center text-xs font-bold uppercase tracking-widest text-orange-400 bg-orange-400/10 px-2 py-1 rounded border border-orange-400/20">
+                          <Clock size={12} className="mr-1" />
+                          {task.timeLimit} min
+                        </div>
+                      )}
                     </div>
                     <Link
                       to={`/student/workspace/${task.questionId}`}

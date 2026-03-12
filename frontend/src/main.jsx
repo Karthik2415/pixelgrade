@@ -12,10 +12,18 @@ import TrainerRoomDetails from './pages/trainer/RoomDetails';
 import CreateQuestion from './pages/trainer/CreateQuestion';
 import Analytics from './pages/trainer/Analytics';
 import Leaderboard from './pages/trainer/Leaderboard';
+import TrainerContestList from './pages/trainer/ContestList';
+import CreateContest from './pages/trainer/CreateContest';
+
 import StudentRoomList from './pages/student/RoomList';
 import StudentRoomDetails from './pages/student/RoomDetails';
 import Workspace from './pages/student/Workspace';
 import ResultViewer from './pages/student/ResultViewer';
+import StudentContestList from './pages/student/ContestList';
+import ContestDashboard from './pages/student/ContestDashboard';
+import ContestWorkspace from './pages/student/ContestWorkspace';
+
+import ContestLeaderboard from './pages/shared/ContestLeaderboard';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -35,12 +43,24 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="/trainer/analytics" element={<Analytics />} />
             <Route path="/trainer/leaderboard" element={<Leaderboard />} />
             
+            {/* Trainer Contest Routes */}
+            <Route path="/trainer/contests" element={<TrainerContestList />} />
+            <Route path="/trainer/contests/new" element={<CreateContest />} />
+            <Route path="/trainer/contests/:id/leaderboard" element={<ContestLeaderboard />} />
+            
             {/* Student Routes */}
             <Route path="/student/rooms" element={<StudentRoomList />} />
             <Route path="/student/rooms/:roomId" element={<StudentRoomDetails />} />
             <Route path="/student/workspace/:id" element={<Workspace />} />
             <Route path="/student/results/:id" element={<ResultViewer />} />
             <Route path="/student/leaderboard" element={<Leaderboard />} />
+            
+            {/* Student Contest Routes */}
+            <Route path="/student/contests" element={<StudentContestList />} />
+            <Route path="/student/contests/:id" element={<ContestDashboard />} />
+            <Route path="/student/contests/:id/workspace/:questionId" element={<ContestWorkspace />} />
+            <Route path="/student/contests/:id/leaderboard" element={<ContestLeaderboard />} />
+            
             <Route path="/student/dashboard" element={<Navigate to="/student/rooms" replace />} />
             <Route path="/trainer/dashboard" element={<Navigate to="/trainer/rooms" replace />} />
           </Route>

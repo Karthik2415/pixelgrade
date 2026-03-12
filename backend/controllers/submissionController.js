@@ -6,8 +6,8 @@ const { getDb } = require("../config/firebase");
  */
 async function createSubmission(req, res) {
   try {
-    const { questionId, htmlCode, cssCode, jsCode } = req.body;
-    console.log("📥 Received submission:", { questionId, htmlLen: htmlCode?.length, cssLen: cssCode?.length, jsLen: jsCode?.length });
+    const { questionId, htmlCode, cssCode, jsCode, contestId } = req.body;
+    console.log("📥 Received submission:", { questionId, contestId, htmlLen: htmlCode?.length, cssLen: cssCode?.length, jsLen: jsCode?.length });
 
     if (!questionId) {
       return res.status(400).json({
@@ -33,6 +33,7 @@ async function createSubmission(req, res) {
     const submissionData = {
       questionId,
       roomId: questionData.roomId || null,
+      contestId: contestId || null,
       studentId: req.user.userId,
       studentName: req.user.name,
       htmlCode: htmlCode || "",

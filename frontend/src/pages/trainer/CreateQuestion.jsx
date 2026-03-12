@@ -26,6 +26,7 @@ const DEFAULT_JSON = `{
 export default function CreateQuestion() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [timeLimit, setTimeLimit] = useState('');
   const [referenceImage, setReferenceImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [testCases, setTestCases] = useState(DEFAULT_JSON);
@@ -63,6 +64,7 @@ export default function CreateQuestion() {
         description,
         referenceImage,
         testCases,
+        timeLimit: timeLimit ? parseInt(timeLimit, 10) : null,
       };
 
       await api.post('/questions', {
@@ -141,6 +143,20 @@ export default function CreateQuestion() {
                   rows={6}
                   placeholder="Describe the task, rules, and requirements..."
                   className="w-full bg-background border border-gray-700 rounded-lg px-4 py-2 text-sm text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none resize-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">
+                  Time Limit (minutes) <span className="text-gray-500 text-xs font-normal">- Optional</span>
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  value={timeLimit}
+                  onChange={(e) => setTimeLimit(e.target.value)}
+                  placeholder="e.g., 30"
+                  className="w-full bg-background border border-gray-700 rounded-lg px-4 py-2 text-sm text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none"
                 />
               </div>
             </div>
