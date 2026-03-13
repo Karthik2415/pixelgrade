@@ -30,7 +30,7 @@ async function runPuppeteerEvaluation({
 
   try {
     // ── 1. Launch Chromium ──────────────────────────────────────────
-    browser = await puppeteer.launch({
+    const puppeteerConfig = {
       headless: "new",
       args: [
         "--no-sandbox",
@@ -38,7 +38,14 @@ async function runPuppeteerEvaluation({
         "--disable-dev-shm-usage",
         "--disable-gpu",
       ],
-    });
+    };
+
+    // Use Render's default Chromium path if available, otherwise let Puppeteer find it natively
+    if (process.env.RENDER) {
+      puppeteerConfig.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/google-chrome';
+    }
+
+    browser = await puppeteer.launch(puppeteerConfig);
 
     const page = await browser.newPage();
 
