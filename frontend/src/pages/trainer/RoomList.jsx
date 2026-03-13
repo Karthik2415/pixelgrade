@@ -64,7 +64,7 @@ export default function RoomList() {
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg flex items-center space-x-2 transition-colors shadow-lg shadow-primary/20"
+          className="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 shadow-lg shadow-primary/20 btn-ripple hover:shadow-xl active:scale-[0.97]"
         >
           <Plus size={20} />
           <span>New Room</span>
@@ -94,11 +94,11 @@ export default function RoomList() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 stagger-children">
           {rooms.map((room) => (
             <div
               key={room.roomId}
-              className="bg-panel border border-gray-800 rounded-xl overflow-hidden hover:border-primary/50 transition-all group"
+              className="bg-panel border border-gray-800 rounded-xl overflow-hidden hover:border-primary/50 transition-all duration-300 group hover-lift animate-fade-in-up"
             >
               <div className="p-6">
                 <div className="flex justify-between items-start mb-4">

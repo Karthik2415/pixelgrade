@@ -103,7 +103,7 @@ export default function ResultViewer() {
       </div>
 
       {/* Score Breakdown Panel */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 stagger-children">
         <ScoreCard 
           title="DOM Score" 
           score={result.domScore} 
@@ -153,7 +153,7 @@ export default function ResultViewer() {
       )}
 
       {/* Visual Diff Panel */}
-      <div className="bg-panel border border-gray-800 rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-panel border border-gray-800 rounded-xl overflow-hidden shadow-sm animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
         <div className="p-4 border-b border-gray-800 bg-sidebar">
           <h2 className="text-lg font-semibold text-white">Visual Comparison</h2>
           <p className="text-sm text-gray-400">Red pixels in the heatmap indicate layout or styling differences.</p>
@@ -202,7 +202,7 @@ function ScoreCard({ title, score, max, icon, color, subtitle }) {
   const percentage = Math.round((score / max) * 100);
   
   return (
-    <div className="bg-panel border border-gray-800 rounded-xl p-5 flex items-center justify-between">
+    <div className="bg-panel border border-gray-800 rounded-xl p-5 flex items-center justify-between animate-bounce-in hover-lift transition-all duration-300">
       <div>
         <p className="text-sm font-medium text-gray-400 mb-1">{title}</p>
         <div className="flex items-baseline space-x-2">

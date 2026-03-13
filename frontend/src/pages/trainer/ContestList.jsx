@@ -57,7 +57,7 @@ export default function ContestList() {
         </div>
         <Link
           to="/trainer/contests/new"
-          className="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg flex items-center space-x-2 transition-colors shadow-lg shadow-primary/20"
+          className="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 shadow-lg shadow-primary/20 btn-ripple hover:shadow-xl active:scale-[0.97]"
         >
           <Plus size={20} />
           <span>New Contest</span>
@@ -85,11 +85,11 @@ export default function ContestList() {
           </Link>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-4 stagger-children">
           {contests.map((contest) => (
             <div
               key={contest.contestId}
-              className="bg-panel border border-gray-800 rounded-xl p-5 hover:border-gray-600 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 group"
+              className="bg-panel border border-gray-800 rounded-xl p-5 hover:border-gray-600 transition-all duration-300 flex flex-col md:flex-row md:items-center justify-between gap-4 group hover-lift animate-fade-in-up"
             >
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">

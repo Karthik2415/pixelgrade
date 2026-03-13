@@ -52,7 +52,7 @@ export default function StudentRoomList() {
         </div>
         <button
           onClick={() => setShowJoinModal(true)}
-          className="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg flex items-center space-x-2 transition-colors shadow-lg shadow-primary/20"
+          className="bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 shadow-lg shadow-primary/20 btn-ripple hover:shadow-xl hover:shadow-primary/30 active:scale-[0.97]"
         >
           <DoorOpen size={20} />
           <span>Join Room</span>
@@ -82,11 +82,11 @@ export default function StudentRoomList() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 stagger-children">
           {rooms.map((room) => (
             <div
               key={room.roomId}
-              className="bg-panel border border-gray-800 rounded-xl overflow-hidden hover:border-primary/50 transition-all group"
+              className="bg-panel border border-gray-800 rounded-xl overflow-hidden hover:border-primary/50 transition-all duration-300 group hover-lift animate-fade-in-up"
             >
               <div className="p-6">
                 <div className="flex justify-between items-start mb-4">
@@ -118,7 +118,7 @@ export default function StudentRoomList() {
       {/* Join Room Modal */}
       {showJoinModal && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
-          <div className="bg-panel border border-gray-800 rounded-2xl p-8 w-full max-w-md shadow-2xl">
+          <div className="bg-panel border border-gray-800 rounded-2xl p-8 w-full max-w-md shadow-2xl animate-scale-in">
             <h2 className="text-2xl font-bold text-white mb-6">Join a Classroom</h2>
             <form onSubmit={handleJoinRoom} className="space-y-4">
               <div>

@@ -62,11 +62,11 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="flex justify-center text-primary">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md animate-fade-in">
+        <div className="flex justify-center text-primary animate-float">
           <Code2 size={48} />
         </div>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
+        <h2 className="mt-6 text-center text-3xl font-extrabold gradient-text">
           Sign in to PixelGrade
         </h2>
         <p className="mt-2 text-center text-sm text-gray-400">
@@ -75,7 +75,7 @@ export default function Login() {
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-sidebar py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-gray-800">
+        <div className="bg-sidebar py-8 px-4 shadow-2xl sm:rounded-xl sm:px-10 border border-gray-800 animate-fade-in-up hover-glow" style={{ animationDelay: '0.15s' }}>
           <form className="space-y-6" onSubmit={handleSubmit}>
             {error && (
               <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-md text-sm">
@@ -91,10 +91,10 @@ export default function Login() {
                 <button
                   type="button"
                   onClick={() => setRole('student')}
-                  className={`flex-1 py-2 px-4 rounded-md border text-sm font-medium transition-colors ${
+                  className={`flex-1 py-2 px-4 rounded-md border text-sm font-medium transition-all duration-200 btn-ripple ${
                     role === 'student'
-                      ? 'bg-primary/20 border-primary text-primary'
-                      : 'border-gray-700 text-gray-400 hover:bg-panel'
+                      ? 'bg-primary/20 border-primary text-primary shadow-lg shadow-primary/10 scale-[1.02]'
+                      : 'border-gray-700 text-gray-400 hover:bg-panel hover:scale-[1.02]'
                   }`}
                 >
                   Student
@@ -102,10 +102,10 @@ export default function Login() {
                 <button
                   type="button"
                   onClick={() => setRole('trainer')}
-                  className={`flex-1 py-2 px-4 rounded-md border text-sm font-medium transition-colors ${
+                  className={`flex-1 py-2 px-4 rounded-md border text-sm font-medium transition-all duration-200 btn-ripple ${
                     role === 'trainer'
-                      ? 'bg-secondary/20 border-secondary text-secondary'
-                      : 'border-gray-700 text-gray-400 hover:bg-panel'
+                      ? 'bg-secondary/20 border-secondary text-secondary shadow-lg shadow-secondary/10 scale-[1.02]'
+                      : 'border-gray-700 text-gray-400 hover:bg-panel hover:scale-[1.02]'
                   }`}
                 >
                   Trainer
@@ -147,10 +147,10 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={loading}
-                className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 transition-colors ${
+                className={`w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 transition-all duration-200 btn-ripple hover:shadow-lg active:scale-[0.97] ${
                   role === 'trainer'
-                    ? 'bg-secondary hover:bg-green-600 focus:ring-secondary'
-                    : 'bg-primary hover:bg-indigo-600 focus:ring-primary'
+                    ? 'bg-secondary hover:bg-green-600 focus:ring-secondary hover:shadow-secondary/30'
+                    : 'bg-primary hover:bg-indigo-600 focus:ring-primary hover:shadow-primary/30'
                 }`}
               >
                 {loading ? (
@@ -179,7 +179,7 @@ export default function Login() {
               <button
                 onClick={handleGoogleSignIn}
                 disabled={loading}
-                className="w-full flex justify-center py-2 px-4 border border-gray-600 rounded-md shadow-sm text-sm font-medium text-white bg-panel hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 transition-colors"
+                className="w-full flex justify-center py-2.5 px-4 border border-gray-600 rounded-lg shadow-sm text-sm font-medium text-white bg-panel hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 transition-all duration-200 btn-ripple hover:shadow-lg hover:border-gray-500 active:scale-[0.97]"
               >
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                   <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>

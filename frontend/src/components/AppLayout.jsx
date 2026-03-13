@@ -1,10 +1,11 @@
-import { Outlet, Navigate } from "react-router-dom";
+import { Outlet, Navigate, useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
 import { useAuth } from "../context/AuthContext";
 
 export default function AppLayout() {
   const { user, loading } = useAuth();
+  const location = useLocation();
 
   if (loading) {
     return (
@@ -24,7 +25,9 @@ export default function AppLayout() {
       <div className="flex-1 flex flex-col overflow-hidden">
         <Navbar />
         <main className="flex-1 overflow-auto p-6">
-          <Outlet />
+          <div className="page-enter" key={location.pathname}>
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>
