@@ -39,9 +39,22 @@ export default function CreateContest() {
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+        
+        // Force conversion to PNG base64 so backend pixelmatch doesn't crash on JPEGs
+        const pngBase64 = canvas.toDataURL("image/png");
+        setQReferenceImage(pngBase64.split(',')[1]); 
+      };
+      
       const reader = new FileReader();
       reader.onloadend = () => {
-        setQReferenceImage(reader.result.split(',')[1]); 
+        img.src = reader.result;
       };
       reader.readAsDataURL(file);
     }

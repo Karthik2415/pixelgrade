@@ -35,19 +35,28 @@ async function evaluateSubmission(req, res) {
     const submission = submissionDoc.data();
 
     // ── 2. Fetch question ──────────────────────────────────────────
-    const questionDoc = await db
-      .collection("questions")
-      .doc(submission.questionId)
-      .get();
-
-    if (!questionDoc.exists) {
-      return res.status(404).json({
-        success: false,
-        message: "Associated question not found",
-      });
+    let question;
+    
+    if (submission.contestId) {
+      const contestDoc = await db.collection("contests").doc(submission.contestId).get();
+      if (!contestDoc.exists) {
+        return res.status(404).json({ success: false, message: "Contest not found" });
+      }
+      
+      const contestData = contestDoc.data();
+      const qIndex = parseInt(submission.questionId.split('_q')[1], 10);
+      question = contestData.questions[qIndex];
+      
+      if (!question) {
+        return res.status(404).json({ success: false, message: "Question not found in contest" });
+      }
+    } else {
+      const questionDoc = await db.collection("questions").doc(submission.questionId).get();
+      if (!questionDoc.exists) {
+        return res.status(404).json({ success: false, message: "Associated question not found" });
+      }
+      question = questionDoc.data();
     }
-
-    const question = questionDoc.data();
 
     // ── Update submission status ───────────────────────────────────
     await db.collection("submissions").doc(submissionId).update({
@@ -97,8 +106,11 @@ async function evaluateSubmission(req, res) {
         // Decode base64 reference image and save
         const expectedPath = path.join(screenshotsDir, "expected.png");
         
-        // Strip data URI prefix in case it's still there
-        const base64Data = question.referenceImage.replace(/^data:image\/[a-z]+;base64,/, "");
+        // Strip data URI prefix robustly by splitting on comma if it exists
+        const base64Data = question.referenceImage.includes(',') 
+          ? question.referenceImage.split(',')[1].trim()
+          : question.referenceImage.trim();
+          
         const refBuffer = Buffer.from(base64Data, "base64");
         fs.writeFileSync(expectedPath, refBuffer);
 

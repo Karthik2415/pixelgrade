@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import api from "../../lib/api";
-import { Plus, Flame, Clock, Calendar, ArrowRight } from "lucide-react";
+import { Plus, Flame, Clock, Calendar, ArrowRight, BarChart2 } from "lucide-react";
 
 export default function ContestList() {
   const [contests, setContests] = useState([]);
@@ -118,18 +118,16 @@ export default function ContestList() {
 
               <div className="flex items-center gap-3 mt-4 md:mt-0 pt-4 md:pt-0 border-t border-gray-800 md:border-none">
                 <Link
+                  to={`/trainer/contests/${contest.contestId}/analytics`}
+                  className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5"
+                >
+                  <BarChart2 size={16} /> Analytics
+                </Link>
+                <Link
                   to={`/trainer/contests/${contest.contestId}/leaderboard`}
                   className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
                 >
                   Leaderboard
-                </Link>
-                {/* For trainer, clicking the arrow could go to a details page, or leaderboard. Let's send to details/leaderboard */}
-                <Link
-                  to={`/trainer/contests/${contest.contestId}/leaderboard`}
-                  className="text-gray-400 hover:text-white p-2 rounded-lg transition-colors bg-gray-800/50"
-                  title="View Details"
-                >
-                  <ArrowRight size={20} />
                 </Link>
               </div>
             </div>

@@ -18,16 +18,22 @@ async function createSubmission(req, res) {
 
     const db = getDb();
 
-    // ── Verify question exists ─────────────────────────────────────
-    const questionDoc = await db.collection("questions").doc(questionId).get();
-    if (!questionDoc.exists) {
-      return res.status(404).json({
-        success: false,
-        message: "Question not found",
-      });
+    // ── Verify question/contest exists ─────────────────────────────
+    let questionData = {};
+    
+    if (contestId) {
+      const contestDoc = await db.collection("contests").doc(contestId).get();
+      if (!contestDoc.exists) {
+        return res.status(404).json({ success: false, message: "Contest not found" });
+      }
+      questionData = { roomId: null }; // Contests don't have room IDs
+    } else {
+      const questionDoc = await db.collection("questions").doc(questionId).get();
+      if (!questionDoc.exists) {
+        return res.status(404).json({ success: false, message: "Question not found" });
+      }
+      questionData = questionDoc.data();
     }
-
-    const questionData = questionDoc.data();
     
     // ── Save submission ────────────────────────────────────────────
     const submissionData = {

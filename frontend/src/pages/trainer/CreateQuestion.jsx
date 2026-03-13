@@ -39,12 +39,26 @@ export default function CreateQuestion() {
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+        
+        // Force conversion to PNG base64
+        const pngDataUrl = canvas.toDataURL("image/png");
+        setImagePreview(pngDataUrl);
+        
+        // Strip data:image/png;base64, prefix for the backend
+        const base64String = pngDataUrl.replace(/^data:image\/[a-z]+;base64,/, "");
+        setReferenceImage(base64String);
+      };
+      
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result);
-        // Strip data:image/png;base64, prefix for the backend
-        const base64String = reader.result.replace(/^data:image\/[a-z]+;base64,/, "");
-        setReferenceImage(base64String);
+        img.src = reader.result;
       };
       reader.readAsDataURL(file);
     }

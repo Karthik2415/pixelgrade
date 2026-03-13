@@ -14,6 +14,7 @@ import Analytics from './pages/trainer/Analytics';
 import Leaderboard from './pages/trainer/Leaderboard';
 import TrainerContestList from './pages/trainer/ContestList';
 import CreateContest from './pages/trainer/CreateContest';
+import ContestAnalytics from './pages/trainer/ContestAnalytics';
 
 import StudentRoomList from './pages/student/RoomList';
 import StudentRoomDetails from './pages/student/RoomDetails';
@@ -47,6 +48,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="/trainer/contests" element={<TrainerContestList />} />
             <Route path="/trainer/contests/new" element={<CreateContest />} />
             <Route path="/trainer/contests/:id/leaderboard" element={<ContestLeaderboard />} />
+            <Route path="/trainer/contests/:id/analytics" element={<ContestAnalytics />} />
             
             {/* Student Routes */}
             <Route path="/student/rooms" element={<StudentRoomList />} />

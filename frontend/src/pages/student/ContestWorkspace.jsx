@@ -33,12 +33,29 @@ export default function ContestWorkspace() {
       const q = qRes.data.data;
       setQuestion(q);
       
-      // We don't load previous submissions for contests to keep it simple,
-      // or we could if we wanted to support leaving and coming back.
-      // For now, load starter code.
-      setHtmlCode(q.starterHtml || '');
-      setCssCode(q.starterCss || '');
-      setJsCode(q.starterJs || '');
+      // Try to load the student's latest submission for this contest question
+      // so the code persists when navigating back from the results page
+      try {
+        const sRes = await api.get(`/submissions?questionId=${q.questionId}`);
+        const submissions = (sRes.data.data || []).filter(s => s.contestId === id);
+        
+        if (submissions.length > 0) {
+          const latest = submissions[0]; // Already sorted newest first by backend
+          setHtmlCode(latest.htmlCode || '');
+          setCssCode(latest.cssCode || '');
+          setJsCode(latest.jsCode || '');
+        } else {
+          // No previous submission, load starter code
+          setHtmlCode(q.starterHtml || '');
+          setCssCode(q.starterCss || '');
+          setJsCode(q.starterJs || '');
+        }
+      } catch (subErr) {
+        // If fetching submissions fails, fall back to starter code
+        setHtmlCode(q.starterHtml || '');
+        setCssCode(q.starterCss || '');
+        setJsCode(q.starterJs || '');
+      }
       
       // Initialize Global Timer based on contest end time
       if (q.contestEndTime) {
