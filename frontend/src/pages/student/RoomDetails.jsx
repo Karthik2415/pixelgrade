@@ -82,21 +82,32 @@ export default function StudentRoomDetails() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tasks.map((task) => (
-              <div 
-                key={task.questionId}
-                className="bg-panel border border-gray-800 rounded-xl overflow-hidden hover:border-gray-600 transition-all flex flex-col group"
-              >
-                {task.referenceImage ? (
-                  <div className="aspect-video w-full bg-gray-900 border-b border-gray-800 relative overflow-hidden">
-                    <img 
-                      src={task.referenceImage.startsWith('data:') ? task.referenceImage : `data:image/png;base64,${task.referenceImage}`}
-                      alt={task.title}
-                      className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent" />
-                  </div>
-                ) : (
+            {tasks.map((task) => {
+              const isFinished = task.latestSubmissionStatus === 'evaluated' || task.latestSubmissionStatus === 'pending';
+              const borderClass = isFinished 
+                ? 'border-green-500 shadow-[0_0_15px_rgba(34,197,94,0.1)] hover:border-green-400 hover:shadow-[0_0_20px_rgba(34,197,94,0.2)]' 
+                : 'border-red-500/50 hover:border-red-500 hover:shadow-[0_0_15px_rgba(239,68,68,0.15)]';
+
+              return (
+                <div 
+                  key={task.questionId}
+                  className={`bg-panel border-2 rounded-xl overflow-hidden transition-all flex flex-col group relative ${borderClass}`}
+                >
+                  {isFinished && (
+                    <div className="absolute top-4 right-4 z-10 bg-green-500 text-white rounded-full p-1 shadow-lg shadow-green-500/50">
+                      <CheckCircle size={24} strokeWidth={2.5} />
+                    </div>
+                  )}
+                  {task.referenceImage ? (
+                    <div className="aspect-video w-full bg-gray-900 border-b border-gray-800 relative overflow-hidden">
+                      <img 
+                        src={task.referenceImage.startsWith('data:') ? task.referenceImage : `data:image/png;base64,${task.referenceImage}`}
+                        alt={task.title}
+                        className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent" />
+                    </div>
+                  ) : (
                   <div className="aspect-video w-full bg-gray-900 border-b border-gray-800 flex items-center justify-center text-gray-700">
                     <FileText size={48} />
                   </div>
@@ -112,9 +123,22 @@ export default function StudentRoomDetails() {
                   
                   <div className="flex items-center justify-between mt-auto">
                     <div className="flex items-center gap-2">
-                      <div className="flex items-center text-xs font-bold uppercase tracking-widest text-gray-500 bg-gray-800 px-2 py-1 rounded">
-                        <Play size={12} className="mr-1" />
-                        Active
+                      <div className={`flex items-center text-xs font-bold uppercase tracking-widest px-2 py-1 rounded border ${
+                        isFinished 
+                          ? 'text-green-400 bg-green-400/10 border-green-400/20' 
+                          : 'text-red-400 bg-red-400/10 border-red-400/20'
+                      }`}>
+                        {isFinished ? (
+                          <>
+                            <CheckCircle size={12} className="mr-1" />
+                            Finished
+                          </>
+                        ) : (
+                          <>
+                            <Play size={12} className="mr-1" />
+                            Active
+                          </>
+                        )}
                       </div>
                       {task.timeLimit && (
                         <div className="flex items-center text-xs font-bold uppercase tracking-widest text-orange-400 bg-orange-400/10 px-2 py-1 rounded border border-orange-400/20">
@@ -125,14 +149,19 @@ export default function StudentRoomDetails() {
                     </div>
                     <Link
                       to={`/student/workspace/${task.questionId}`}
-                      className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors"
+                      className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${
+                        isFinished 
+                          ? 'bg-panel border border-green-500/50 text-green-400 hover:bg-green-500/10 hover:border-green-500' 
+                          : 'bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20'
+                      }`}
                     >
-                      Start Challenge
+                      {isFinished ? 'Review Submission' : 'Start Challenge'}
                     </Link>
                   </div>
                 </div>
               </div>
-            ))}
+            );
+          })}
           </div>
         )}
       </div>

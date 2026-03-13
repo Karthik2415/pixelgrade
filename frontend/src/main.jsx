@@ -25,6 +25,7 @@ import ContestDashboard from './pages/student/ContestDashboard';
 import ContestWorkspace from './pages/student/ContestWorkspace';
 
 import ContestLeaderboard from './pages/shared/ContestLeaderboard';
+import AdminDashboard from './pages/admin/AdminDashboard';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -65,6 +66,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             
             <Route path="/student/dashboard" element={<Navigate to="/student/rooms" replace />} />
             <Route path="/trainer/dashboard" element={<Navigate to="/trainer/rooms" replace />} />
+            
+            {/* Admin Routes */}
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </Route>
         </Routes>
       </AuthProvider>

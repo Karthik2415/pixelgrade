@@ -10,6 +10,7 @@ export default function Navbar() {
   // Generate readable page title
   const getTitle = () => {
     const path = location.pathname;
+    if (path.includes('/admin/dashboard')) return 'Admin Dashboard';
     if (path.includes('/trainer/rooms') && path.split('/').length > 3) return 'Room Details';
     if (path.includes('/trainer/rooms')) return 'My Rooms';
     if (path.includes('/trainer/analytics')) return 'Analytics';

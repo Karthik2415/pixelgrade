@@ -19,10 +19,10 @@ async function register(req, res) {
       });
     }
 
-    if (!["student", "trainer"].includes(role)) {
+    if (!["student", "trainer", "admin"].includes(role)) {
       return res.status(400).json({
         success: false,
-        message: "Role must be 'student' or 'trainer'",
+        message: "Role must be 'student', 'trainer', or 'admin'",
       });
     }
 
@@ -192,10 +192,10 @@ async function googleAuth(req, res) {
          });
       }
 
-      if (!["student", "trainer"].includes(role)) {
+      if (!["student", "trainer", "admin"].includes(role)) {
         return res.status(400).json({
           success: false,
-          message: "Role must be 'student' or 'trainer'",
+          message: "Role must be 'student', 'trainer', or 'admin'",
         });
       }
 

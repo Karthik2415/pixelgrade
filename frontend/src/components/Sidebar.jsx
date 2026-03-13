@@ -17,8 +17,13 @@ export default function Sidebar() {
   if (!user) return null;
 
   const isTrainer = user.role === "trainer";
+  const isAdmin = user.role === "admin";
 
-  const links = isTrainer
+  const links = isAdmin
+    ? [
+        { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
+      ]
+    : isTrainer
     ? [
         { name: "Rooms", path: "/trainer/rooms", icon: LayoutDashboard },
         { name: "Contests", path: "/trainer/contests", icon: Flame },

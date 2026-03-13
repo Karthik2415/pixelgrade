@@ -37,6 +37,7 @@ const evaluateRoutes = require("./routes/evaluate");
 const roomRoutes = require("./routes/rooms");
 const leaderboardRoutes = require("./routes/leaderboard");
 const contestRoutes = require("./routes/contests");
+const adminRoutes = require("./routes/admin");
 
 app.use("/auth", authRoutes);
 app.use("/questions", questionRoutes);
@@ -45,6 +46,7 @@ app.use("/evaluate", evaluateRoutes);
 app.use("/rooms", roomRoutes);
 app.use("/leaderboard", leaderboardRoutes);
 app.use("/contests", contestRoutes);
+app.use("/admin", adminRoutes);
 
 // ── Health Check ─────────────────────────────────────────────────────
 app.get("/", (req, res) => {

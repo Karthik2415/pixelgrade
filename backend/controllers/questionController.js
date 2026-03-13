@@ -104,9 +104,37 @@ async function getQuestions(req, res) {
     // Sort by newest first (in-memory to avoid needing a Firestore composite index)
     questions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
+    let finalQuestions = questions;
+    
+    // If student, attach submission status
+    if (req.user && req.user.role === "student" && roomId) {
+      const submissionsSnapshot = await db.collection("submissions")
+        .where("roomId", "==", roomId)
+        .where("studentId", "==", req.user.userId)
+        .get();
+        
+      const userSubmissions = submissionsSnapshot.docs.map(doc => doc.data());
+      
+      finalQuestions = questions.map(q => {
+        // Find latest submission for this question
+        const qSubmissions = userSubmissions
+          .filter(s => s.questionId === q.questionId)
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          
+        if (qSubmissions.length > 0) {
+          return {
+            ...q,
+            latestSubmissionStatus: qSubmissions[0].status,
+            latestScore: qSubmissions[0].score || null
+          };
+        }
+        return q;
+      });
+    }
+
     res.json({
       success: true,
-      data: questions,
+      data: finalQuestions,
     });
   } catch (error) {
     console.error("Get questions error:", error);

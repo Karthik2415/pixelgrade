@@ -46,6 +46,8 @@ export default function Register() {
     if (result.success) {
       if (role === 'trainer') {
         navigate('/trainer/dashboard');
+      } else if (role === 'admin') {
+        navigate('/admin/dashboard');
       } else {
         navigate('/student/dashboard');
       }
@@ -80,11 +82,11 @@ export default function Register() {
               <label className="block text-sm font-medium text-gray-300">
                 I am a...
               </label>
-              <div className="mt-1 flex space-x-4">
+              <div className="mt-1 flex space-x-3">
                 <button
                   type="button"
                   onClick={() => setRole('student')}
-                  className={`flex-1 py-2 px-4 rounded-md border text-sm font-medium transition-colors ${
+                  className={`flex-1 py-2 px-3 rounded-md border text-sm font-medium transition-colors ${
                     role === 'student'
                       ? 'bg-primary/20 border-primary text-primary'
                       : 'border-gray-700 text-gray-400 hover:bg-panel'
@@ -95,13 +97,24 @@ export default function Register() {
                 <button
                   type="button"
                   onClick={() => setRole('trainer')}
-                  className={`flex-1 py-2 px-4 rounded-md border text-sm font-medium transition-colors ${
+                  className={`flex-1 py-2 px-3 rounded-md border text-sm font-medium transition-colors ${
                     role === 'trainer'
                       ? 'bg-secondary/20 border-secondary text-secondary'
                       : 'border-gray-700 text-gray-400 hover:bg-panel'
                   }`}
                 >
                   Trainer
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRole('admin')}
+                  className={`flex-1 py-2 px-3 rounded-md border text-sm font-medium transition-colors ${
+                    role === 'admin'
+                      ? 'bg-red-500/20 border-red-500 text-red-400'
+                      : 'border-gray-700 text-gray-400 hover:bg-panel'
+                  }`}
+                >
+                  Admin
                 </button>
               </div>
             </div>
@@ -158,6 +171,8 @@ export default function Register() {
                 className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 transition-colors ${
                   role === 'trainer' 
                     ? 'bg-secondary hover:bg-green-600 focus:ring-secondary' 
+                    : role === 'admin'
+                    ? 'bg-red-500 hover:bg-red-600 focus:ring-red-500'
                     : 'bg-primary hover:bg-indigo-600 focus:ring-primary'
                 }`}
               >

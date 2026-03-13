@@ -26,6 +26,7 @@ export default function Login() {
         const userStr = localStorage.getItem('user');
         const user = userStr ? JSON.parse(userStr) : null;
         if (user?.role === 'trainer') navigate('/trainer/rooms');
+        else if (user?.role === 'admin') navigate('/admin/dashboard');
         else navigate('/student/rooms');
       } else {
         setError(backendResult.message);
@@ -50,6 +51,8 @@ export default function Login() {
       
       if (user?.role === 'trainer') {
         navigate('/trainer/rooms');
+      } else if (user?.role === 'admin') {
+        navigate('/admin/dashboard');
       } else {
         navigate('/student/rooms');
       }
@@ -87,11 +90,11 @@ export default function Login() {
               <label className="block text-sm font-medium text-gray-300">
                 I am a...
               </label>
-              <div className="mt-1 flex space-x-4">
+              <div className="mt-1 flex space-x-3">
                 <button
                   type="button"
                   onClick={() => setRole('student')}
-                  className={`flex-1 py-2 px-4 rounded-md border text-sm font-medium transition-all duration-200 btn-ripple ${
+                  className={`flex-1 py-2 px-3 rounded-md border text-sm font-medium transition-all duration-200 btn-ripple ${
                     role === 'student'
                       ? 'bg-primary/20 border-primary text-primary shadow-lg shadow-primary/10 scale-[1.02]'
                       : 'border-gray-700 text-gray-400 hover:bg-panel hover:scale-[1.02]'
@@ -102,13 +105,24 @@ export default function Login() {
                 <button
                   type="button"
                   onClick={() => setRole('trainer')}
-                  className={`flex-1 py-2 px-4 rounded-md border text-sm font-medium transition-all duration-200 btn-ripple ${
+                  className={`flex-1 py-2 px-3 rounded-md border text-sm font-medium transition-all duration-200 btn-ripple ${
                     role === 'trainer'
                       ? 'bg-secondary/20 border-secondary text-secondary shadow-lg shadow-secondary/10 scale-[1.02]'
                       : 'border-gray-700 text-gray-400 hover:bg-panel hover:scale-[1.02]'
                   }`}
                 >
                   Trainer
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRole('admin')}
+                  className={`flex-1 py-2 px-3 rounded-md border text-sm font-medium transition-all duration-200 btn-ripple ${
+                    role === 'admin'
+                      ? 'bg-red-500/20 border-red-500 text-red-400 shadow-lg shadow-red-500/10 scale-[1.02]'
+                      : 'border-gray-700 text-gray-400 hover:bg-panel hover:scale-[1.02]'
+                  }`}
+                >
+                  Admin
                 </button>
               </div>
             </div>
@@ -150,6 +164,8 @@ export default function Login() {
                 className={`w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 transition-all duration-200 btn-ripple hover:shadow-lg active:scale-[0.97] ${
                   role === 'trainer'
                     ? 'bg-secondary hover:bg-green-600 focus:ring-secondary hover:shadow-secondary/30'
+                    : role === 'admin'
+                    ? 'bg-red-500 hover:bg-red-600 focus:ring-red-500 hover:shadow-red-500/30'
                     : 'bg-primary hover:bg-indigo-600 focus:ring-primary hover:shadow-primary/30'
                 }`}
               >
@@ -158,7 +174,7 @@ export default function Login() {
                 ) : (
                   <>
                     <LogIn className="w-5 h-5 mr-2" />
-                    Sign in as {role === 'trainer' ? 'Trainer' : 'Student'}
+                    Sign in as {role === 'trainer' ? 'Trainer' : role === 'admin' ? 'Admin' : 'Student'}
                   </>
                 )}
               </button>
